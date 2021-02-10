@@ -17,9 +17,9 @@ class Order
 
     def summary
         items.each { |dish|
-            @output.puts "#{dish.values.first} X #{dish.keys.first.name}: £#{calculate_dish_total(dish)}"
+            @output.puts "#{dish_quantity(dish)} X #{dish_name(dish)}: £#{dish_total(dish)}"
         }
-        @output.puts "Total Price: £#{calculate_order_total}"
+        @output.puts "Total Price: £#{order_total}"
     end
 
     private
@@ -36,15 +36,27 @@ class Order
         }
     end
 
-    def calculate_dish_total(dish)
-        total = 0
-        total += (dish.keys.first.price * dish.values.first)
+    def dish_name(dish)
+        dish.keys.first.name
     end
 
-    def calculate_order_total
+    def dish_price(dish)
+        dish.keys.first.price
+    end
+
+    def dish_quantity(dish)
+        dish.values.first
+    end
+
+    def dish_total(dish)
+        total = 0
+        total += (dish_price(dish) * dish_quantity(dish))
+    end
+
+    def order_total
         total = 0
         items.each { |dish|
-            total += calculate_dish_total(dish)
+            total += dish_total(dish)
         }
         total
     end
