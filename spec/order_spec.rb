@@ -24,7 +24,8 @@ describe Order do
         end
 
         it 'adds a number of dishes to the order' do
-            expect{ subject.add("Curry", 4) }.to change{ subject.items.length }.by(4)
+            expect{ subject.add("Curry", 4) }.to change{ subject.items.length }.by(1)
+            expect(subject.items.first.values).to eq([4])
         end
 
         it 'does not add a dish that is not part of the menu' do
@@ -33,16 +34,15 @@ describe Order do
 
     end
 
-    # describe '#summary' do
+    describe '#summary' do
         
-    #     it 'gives a summary of the dish name, quantity, price and total price' do
-    #         subject.add(curry)
-    #         subject.add(curry)
-    #         subject.add(rice)
-    #         subject.summary
-    #         expect(output.string).to eq("2 X Curry: £10\n1 X Rice: £8\nTotal Price: £18\n")
-    #     end
+        it 'gives a summary of the dish name, quantity, price and total price' do
+            subject.add("curry", 2)
+            subject.add("rice")
+            subject.summary
+            expect(output.string).to eq("2 X Curry: £10\n1 X Rice: £4\nTotal Price: £14\n")
+        end
 
-    # end
+    end
 
 end

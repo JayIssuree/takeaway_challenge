@@ -12,14 +12,15 @@ class Order
 
     def add(dish_name, quantity = 1)
         dish_on_menu?(dish_name)
-        quantity.times do
-            @items << find_dish_by_name(dish_name)
-        end
+        @items << { find_dish_by_name(dish_name) => quantity }
     end
 
-    # def summary
-
-    # end
+    def summary
+        items.each { |dish|
+            @output.puts "#{dish.values.first} X #{dish.keys.first.name}: £#{calculate_dish_total(dish)}"
+        }
+        @output.puts "Total Price: £#{calculate_order_total}"
+    end
 
     private
 
@@ -31,8 +32,21 @@ class Order
 
     def find_dish_by_name(dish_name)
         menu.dishes.find{ |dish|
-            dish.name == dish_name
+            dish.name.downcase == dish_name.downcase
         }
+    end
+
+    def calculate_dish_total(dish)
+        total = 0
+        total += (dish.keys.first.price * dish.values.first)
+    end
+
+    def calculate_order_total
+        total = 0
+        items.each { |dish|
+            total += calculate_dish_total(dish)
+        }
+        total
     end
 
 end
