@@ -1,7 +1,10 @@
+require_relative 'sms'
+
 class Order
 
-    def initialize(menu:, output: $stdout)
+    def initialize(menu:, sms: SMS, output: $stdout)
         @menu = menu
+        @SMS = sms
         @output = output
         @items = []
     end
@@ -20,6 +23,10 @@ class Order
             @output.puts "#{dish_quantity(dish)} X #{dish_name(dish)}: £#{dish_total(dish)}"
         }
         @output.puts "Total Price: £#{order_total}"
+    end
+
+    def complete_order
+        @SMS.send_message(body: order_message)
     end
 
     private
@@ -59,6 +66,15 @@ class Order
             total += dish_total(dish)
         }
         total
+    end
+
+    def delivery_time
+        hour_ahead = Time.now + 3600
+        hour_ahead.strftime("%H:%M")
+    end
+
+    def order_message
+        "Thank you! Your order was placed and will be delivered before #{delivery_time}"
     end
 
 end

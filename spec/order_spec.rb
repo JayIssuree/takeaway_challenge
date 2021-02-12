@@ -7,7 +7,8 @@ describe Order do
     let(:cake) { double :dish, :name => "Cake", :price => 15 }
     let(:output) { StringIO.new }
     let(:menu) { double :menu, :dishes => [curry, rice] }
-    let(:subject) { described_class.new(menu: menu, output: output) }
+    let(:twilio) { double :twilio }
+    let(:subject) { described_class.new(menu: menu, sms: twilio ,output: output) }
 
     describe '#initialization' do
     
@@ -41,6 +42,15 @@ describe Order do
             subject.add("rice")
             subject.summary
             expect(output.string).to eq("2 X Curry: £10\n1 X Rice: £4\nTotal Price: £14\n")
+        end
+
+    end
+
+    describe '#complete_order' do
+        
+        it 'sends a text message' do
+            expect(twilio).to receive(:send_message)
+            subject.complete_order
         end
 
     end
