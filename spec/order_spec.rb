@@ -8,7 +8,8 @@ describe Order do
     let(:output) { StringIO.new }
     let(:menu) { double :menu, :dishes => [curry, rice] }
     let(:twilio) { double :twilio }
-    let(:subject) { described_class.new(menu: menu, sms: twilio ,output: output) }
+    let(:calculator) { double :calculator }
+    let(:subject) { described_class.new(menu: menu, calculator: calculator, sms: twilio ,output: output) }
 
     describe '#initialization' do
     
@@ -38,8 +39,10 @@ describe Order do
     describe '#summary' do
         
         it 'gives a summary of the dish name, quantity, price and total price' do
+            allow(calculator).to receive(:dish_total).and_return(10, 4)
             subject.add("curry", 2)
             subject.add("rice")
+            allow(calculator).to receive(:order_total).and_return(14)
             subject.summary
             expect(output.string).to eq("2 X Curry: £10\n1 X Rice: £4\nTotal Price: £14\n")
         end

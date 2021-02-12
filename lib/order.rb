@@ -1,10 +1,12 @@
 require_relative 'sms'
+require_relative 'calculator'
 
 class Order
 
-    def initialize(menu:, sms: SMS, output: $stdout)
+    def initialize(menu:, calculator: Calculator.new, sms: SMS, output: $stdout)
         @menu = menu
         @SMS = sms
+        @calculator = calculator
         @output = output
         @items = []
     end
@@ -31,7 +33,7 @@ class Order
 
     private
 
-    attr_reader :menu
+    attr_reader :menu, :calculator
 
     def dish_on_menu?(dish_name)
         fail "Item is not on the menu" if find_dish_by_name(dish_name) == nil
@@ -56,16 +58,11 @@ class Order
     end
 
     def dish_total(dish)
-        total = 0
-        total += (dish_price(dish) * dish_quantity(dish))
+        calculator.dish_total(dish)
     end
 
     def order_total
-        total = 0
-        items.each { |dish|
-            total += dish_total(dish)
-        }
-        total
+        calculator.order_total(items)
     end
 
     def delivery_time
